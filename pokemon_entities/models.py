@@ -14,7 +14,6 @@ class Pokemon(models.Model):
                               null=True)
     description = models.TextField(null=True, blank=True, verbose_name="Описание")
     evolves_from = "Из кого эволюционирует"
-    # evolves_to = "В кого эволюционирует"
     previous_evolution = models.ForeignKey("self", verbose_name=evolves_from,
                                            on_delete=models.SET_NULL,
                                            related_name='next_evolutions',
