@@ -13,11 +13,12 @@ class Pokemon(models.Model):
     photo = models.ImageField(upload_to='pokemons', verbose_name="Картинка",
                               null=True)
     description = models.TextField(null=True, verbose_name="Описание")
-    evolves_from = "Из кого эволюционирует"
-    previous_evolution = models.ForeignKey("self", verbose_name=evolves_from,
-                                           on_delete=models.SET_NULL,
-                                           related_name='next_evolutions',
-                                           null=True, blank=True)
+    previous_evolution = models.ForeignKey(
+        "self", verbose_name="Из кого эволюционирует",
+        on_delete=models.SET_NULL,
+        related_name='next_evolutions',
+        null=True, blank=True
+    )
 
     def __str__(self):
         return self.title
@@ -26,7 +27,8 @@ class Pokemon(models.Model):
 class PokemonEntity(models.Model):
     """Сущность покемона"""
     pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE,
-                                default=None, verbose_name="Покемон")
+                                verbose_name="Покемон",
+                                related_name="pokemons")
     lat = models.FloatField(max_length=7, verbose_name="Широта")
     lon = models.FloatField(max_length=7, verbose_name="Долгота")
     appeared_at = models.DateTimeField(default=None, null=True,
