@@ -12,7 +12,7 @@ class Pokemon(models.Model):
                                 blank=True)
     photo = models.ImageField(upload_to='pokemons', verbose_name="Картинка",
                               null=True)
-    description = models.TextField(null=True, blank=True, verbose_name="Описание")
+    description = models.TextField(null=True, verbose_name="Описание")
     evolves_from = "Из кого эволюционирует"
     previous_evolution = models.ForeignKey("self", verbose_name=evolves_from,
                                            on_delete=models.SET_NULL,
