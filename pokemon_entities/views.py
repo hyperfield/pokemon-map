@@ -26,7 +26,7 @@ def show_all_pokemons(request):
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in pokemons:
-        for pokemon_entity in PokemonEntity.objects.filter(pokemon=pokemon):
+        for pokemon_entity in pokemon.entities.all():
             add_pokemon(
                 folium_map, pokemon_entity.lat, pokemon_entity.lon,
                 request.build_absolute_uri(pokemon.photo.url))
@@ -46,13 +46,9 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemons = Pokemon.objects.all()
-
-    for pokemon in pokemons:
-        if pokemon.id == int(pokemon_id):
-            requested_pokemon = pokemon
-            break
-    else:
+    try:
+        requested_pokemon = Pokemon.objects.get(id=pokemon_id)
+    except Pokemon.DoesNotExist:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
     try:
@@ -61,12 +57,12 @@ def show_pokemon(request, pokemon_id):
         next_evolution = False
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for pokemon_entity in PokemonEntity.objects.filter(
-                                                pokemon=requested_pokemon
-                                                ):
+    for pokemon_entity in requested_pokemon.entities.all():
         add_pokemon(
             folium_map, pokemon_entity.lat, pokemon_entity.lon,
-            request.build_absolute_uri(pokemon.photo.url))
+            request.build_absolute_uri(requested_pokemon.photo.url))
 
-    return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),
-                                                    'pokemon': pokemon, 'next_evolution': next_evolution})
+    return render(request, "pokemon.html",
+                  context={'map': folium_map._repr_html_(),
+                           'pokemon': requested_pokemon,
+                           'next_evolution': next_evolution})
